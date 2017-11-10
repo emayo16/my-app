@@ -1,15 +1,15 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+//const methodOverride = require('method-override');
 const path = require('path');
 const http = require('http');
 const app = express();
 
-// API file for interacting with MongoDB
-const api = require('./server/routes/api');
-
-// Parsers
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false}));
+//app.use(methodOverride());
+// API file for interacting with MongoDB
+const api = require('./server/routes/api');
 
 // Angular DIST output folder
 app.use(express.static(path.join(__dirname, '../dist')));

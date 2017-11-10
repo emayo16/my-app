@@ -1,8 +1,18 @@
 const express = require('express');
+const restify = require('express-restify-mongoose');
 const router = express.Router();
-const MongoClient = require('mongodb').MongoClient;
-const ObjectID = require('mongodb').ObjectID;
-const recipe = require('../models/Recipe');
+var mongoose = require('mongoose');
+var recipeModel = require('../models/Recipe');
+var url = 'mongodb://localhost:27017/mean';
+mongoose.connect(url);
+var dbMongoose = mongoose.connection;
+var NutrientInfo = dbMongoose.model('NutrientInfo');
+var Food = dbMongoose.model('Food');
+var Measure = dbMongoose.model('Measure');
+var Ingredient = dbMongoose.model('Ingredient');
+var RecipePart = dbMongoose.model('RecipePart');
+var Recipe = dbMongoose.model('Recipe');
+
 
 // Connect
 const connection = (closure) => {
@@ -43,20 +53,107 @@ router.get('/users', (req, res) => {
   });
 });
 
-// Get users
-router.get('/recipes', (req, res) => {
-  connection((db) => {
-    db.collection('recipes')
-      .find()
-      .toArray()
-      .then((recipes) => {
-        response.data = recipes;
-        res.json(response);
-      })
-      .catch((err) => {
-        sendError(err, res);
-      });
-  });
-});
+const options = {
+  prefix: '',
+  version: ''
+};
+
+restify.defaults(options);
+
+// Endpoints generated:
+
+//   GET http://localhost/api/Food/count
+//   GET http://localhost/api/Food
+//   POST http://localhost/api/Food
+//   DELETE http://localhost/api/Food
+//
+//   GET http://localhost/api/Food/:id
+//   GET http://localhost/api/Food/:id/shallow
+//   PUT http://localhost/api/Food/:id
+//   POST http://localhost/api/Food/:id
+//   PATCH http://localhost/api/Food/:id
+//   DELETE http://localhost/api/Food/:id
+
+restify.serve(router, Food);
+
+// Endpoints generated:
+
+//   GET http://localhost/api/Measure/count
+//   GET http://localhost/api/Measure
+//   POST http://localhost/api/Measure
+//   DELETE http://localhost/api/Measure
+//
+//   GET http://localhost/api/Measure/:id
+//   GET http://localhost/api/Measure/:id/shallow
+//   PUT http://localhost/api/Measure/:id
+//   POST http://localhost/api/Measure/:id
+//   PATCH http://localhost/api/Measure/:id
+//   DELETE http://localhost/api/Measure/:id
+
+restify.serve(router, Measure);
+
+// Endpoints generated:
+
+//   GET http://localhost/api/NutrientInfo/count
+//   GET http://localhost/api/NutrientInfo
+//   POST http://localhost/api/NutrientInfo
+//   DELETE http://localhost/api/NutrientInfo
+//
+//   GET http://localhost/api/NutrientInfo/:id
+//   GET http://localhost/api/NutrientInfo/:id/shallow
+//   PUT http://localhost/api/NutrientInfo/:id
+//   POST http://localhost/api/NutrientInfo/:id
+//   PATCH http://localhost/api/NutrientInfo/:id
+//   DELETE http://localhost/api/NutrientInfo/:id
+
+restify.serve(router, NutrientInfo);
+
+// Endpoints generated:
+
+//   GET http://localhost/api/Ingredient/count
+//   GET http://localhost/api/Ingredient
+//   POST http://localhost/api/Ingredient
+//   DELETE http://localhost/api/Ingredient
+//
+//   GET http://localhost/api/Ingredient/:id
+//   GET http://localhost/api/Ingredient/:id/shallow
+//   PUT http://localhost/api/Ingredient/:id
+//   POST http://localhost/api/Ingredient/:id
+//   PATCH http://localhost/api/Ingredient/:id
+//   DELETE http://localhost/api/Ingredient/:id
+
+restify.serve(router, Ingredient);
+
+// Endpoints generated:
+
+//   GET http://localhost/api/RecipePart/count
+//   GET http://localhost/api/RecipePart
+//   POST http://localhost/api/RecipePart
+//   DELETE http://localhost/api/RecipePart
+//
+//   GET http://localhost/api/RecipePart/:id
+//   GET http://localhost/api/RecipePart/:id/shallow
+//   PUT http://localhost/api/RecipePart/:id
+//   POST http://localhost/api/RecipePart/:id
+//   PATCH http://localhost/api/RecipePart/:id
+//   DELETE http://localhost/api/RecipePart/:id
+
+restify.serve(router, RecipePart);
+
+// Endpoints generated:
+
+//   GET http://localhost/api/Recipe/count
+//   GET http://localhost/api/Recipe
+//   POST http://localhost/api/Recipe
+//   DELETE http://localhost/api/Recipe
+//
+//   GET http://localhost/api/Recipe/:id
+//   GET http://localhost/api/Recipe/:id/shallow
+//   PUT http://localhost/api/Recipe/:id
+//   POST http://localhost/api/Recipe/:id
+//   PATCH http://localhost/api/Recipe/:id
+//   DELETE http://localhost/api/Recipe/:id
+
+restify.serve(router, Recipe);
 
 module.exports = router;
