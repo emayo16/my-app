@@ -1,13 +1,32 @@
-var mongoose = require('mongoose');
-var FoodSchema = require('./Food');
-var MeasureSchema = require('./Measure');
+const mongoose = require('mongoose');
+const FoodSchema = require('./Food');
+const MeasureSchema = require('./Measure');
 
-var IngredientSchema = new mongoose.Schema({
-  uri: String,
-  quantity: Number,
-  measure: MeasureSchema,
-  weight: Number,
-  food: FoodSchema
+const IngredientSchema = new mongoose.Schema({
+  uri: {
+    type: String,
+    required: false
+  },
+  text: {
+    type: String,
+    required: false
+  },
+  quantity: {
+    type: Number,
+    required: false
+  },
+  measure: {
+    type: MeasureSchema,
+    required: false
+  },
+  weight: {
+    type: Number,
+    required: false
+  },
+  food: {
+    type: FoodSchema,
+    required: false
+  }
 });
 
 let Ingredient = mongoose.model('Ingredient', IngredientSchema);

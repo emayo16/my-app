@@ -1,24 +1,38 @@
-var mongoose = require('mongoose');
-var recipeModel = require('./models/Recipe');
-var url = 'mongodb://localhost:27017/mean';
+const mongoose = require('mongoose');
+const url = 'mongodb://localhost:27017/mean';
 mongoose.connect(url);
-var db = mongoose.connection;
-var NutrientInfo = db.model('NutrientInfo');
-var Food = db.model('Food');
-var Measure = db.model('Measure');
-var Ingredient = db.model('Ingredient');
-var RecipePart = db.model('RecipePart');
-var Recipe = db.model('Recipe');
+const db = mongoose.connection;
+const https = require('https');
+const path = require('path');
+const fs = require('fs');
+const uuidv4 = require('uuid/v4');
+const NutrientInfoSchema = require('./models/NutrientInfo');
+const NutrientInfo = db.model('NutrientInfo');
+const FoodSchema = require('./models/Food');
+const Food = db.model('Food');
+const MeasureSchema = require('./models/Measure');
+const Measure = db.model('Measure');
+const IngredientSchema = require('./models/Ingredient');
+const Ingredient = db.model('Ingredient');
+const RecipePartSchema = require('./models/RecipePart');
+const RecipePart = db.model('RecipePart');
+const RecipeSchema = require('./models/Recipe');
+const Recipe = db.model('Recipe');
+const DigestSchema = require('./models/Digest');
+const Digest = db.model('Digest');
+const DigestSubSchema = require('./models/DigestSub');
+const DigestSub = db.model('DigestSub');
+const recipeSearchData = require('./recipeSearchData');
 
-var insertRecipe = function(callback) {
+const insertMockRecipe = function(callback) {
   // Create nutrient infos
-  var energyNutrient = new NutrientInfo({
+  const energyNutrient = new NutrientInfo({
     uri: '/nutrientInfo',
     label: 'Energy',
     quantity: 100,
     unit: 'kcal'
   });
-  var energyNutrientDaily = new NutrientInfo({
+  const energyNutrientDaily = new NutrientInfo({
     uri: '/nutrientInfo',
     label: 'Energy Daily',
     quantity: 2000,
@@ -34,47 +48,47 @@ var insertRecipe = function(callback) {
   });
 
   // Create foods for recipe
-  var sugar = new Food({
+  const sugar = new Food({
     uri: '/food',
     label: 'sugar'
   });
-  var flour = new Food({
+  const flour = new Food({
     uri: '/food',
     label: 'flour'
   });
-  var mcIntoshApple = new Food({
+  const mcIntoshApple = new Food({
     uri: '/food',
     label: 'McIntosh Apple'
   });
-  var cinnamon = new Food({
+  const cinnamon = new Food({
     uri: '/food',
     label: 'cinnamon'
   });
-  var nutmeg = new Food({
+  const nutmeg = new Food({
     uri: '/food',
     label: 'nutmeg'
   });
-  var salt = new Food({
+  const salt = new Food({
     uri: '/food',
     label: 'salt'
   });
-  var lemonJuice = new Food({
+  const lemonJuice = new Food({
     uri: '/food',
     label: 'lemon juice'
   });
-  var unsaltedButter = new Food({
+  const unsaltedButter = new Food({
     uri: '/food',
     label: 'unsalted butter'
   });
-  var milk = new Food({
+  const milk = new Food({
     uri: '/food',
     label: 'milk'
   });
-  var vegetableShortening = new Food({
+  const vegetableShortening = new Food({
     uri: '/food',
     label: 'vegetable shortening'
   });
-  var iceWater = new Food({
+  const iceWater = new Food({
     uri: '/food',
     label: 'ice water'
   });
@@ -115,19 +129,19 @@ var insertRecipe = function(callback) {
   });
 
   // Create recipe measures
-  var tspMeasure = new Measure({
+  const tspMeasure = new Measure({
     uri: '/measure',
     label: 'teaspoon'
   });
-  var tbspMeasure = new Measure({
+  const tbspMeasure = new Measure({
     uri: '/measure',
     label: 'tablespoon'
   });
-  var cupMeasure = new Measure({
+  const cupMeasure = new Measure({
     uri: '/measure',
     label: 'cup'
   });
-  var lbMeasure = new Measure({
+  const lbMeasure = new Measure({
     uri: '/measure',
     label: 'pound'
   });
@@ -147,98 +161,98 @@ var insertRecipe = function(callback) {
   });
 
   // Create recipe ingredients
-  var ingredient1 = new Ingredient({
+  const ingredient1 = new Ingredient({
     uri: '/ingredient',
     quantity: 3,
     measure: lbMeasure,
     weight: 200,
     food: mcIntoshApple
   });
-  var ingredient2 = new Ingredient({
+  const ingredient2 = new Ingredient({
     uri: '/ingredient',
     quantity: .75,
     measure: cupMeasure,
     weight: 50,
     food: sugar
   });
-  var ingredient3 = new Ingredient({
+  const ingredient3 = new Ingredient({
     uri: '/ingredient',
     quantity: 2,
     measure: tbspMeasure,
     weight: 30,
     food: flour
   });
-  var ingredient4 = new Ingredient({
+  const ingredient4 = new Ingredient({
     uri: '/ingredient',
     quantity: 1,
     measure: tspMeasure,
     weight: 5,
     food: cinnamon
   });
-  var ingredient5 = new Ingredient({
+  const ingredient5 = new Ingredient({
     uri: '/ingredient',
     quantity: .25,
     measure: tspMeasure,
     weight: 2,
     food: nutmeg
   });
-  var ingredient6 = new Ingredient({
+  const ingredient6 = new Ingredient({
     uri: '/ingredient',
     quantity: .25,
     measure: tspMeasure,
     weight: 2,
     food: salt
   });
-  var ingredient7 = new Ingredient({
+  const ingredient7 = new Ingredient({
     uri: '/ingredient',
     quantity: 1,
     measure: tbspMeasure,
     weight: 20,
     food: lemonJuice
   });
-  var ingredient8 = new Ingredient({
+  const ingredient8 = new Ingredient({
     uri: '/ingredient',
     quantity: 2,
     measure: tbspMeasure,
     weight: 50,
     food: unsaltedButter
   });
-  var ingredient9 = new Ingredient({
+  const ingredient9 = new Ingredient({
     uri: '/ingredient',
     quantity: .25,
     measure: cupMeasure,
     weight: 35,
     food: milk
   });
-  var ingredient10 = new Ingredient({
+  const ingredient10 = new Ingredient({
     uri: '/ingredient',
     quantity: 1.25,
     measure: cupMeasure,
     weight: 200,
     food: flour
   });
-  var ingredient11 = new Ingredient({
+  const ingredient11 = new Ingredient({
     uri: '/ingredient',
     quantity: 6,
     measure: tbspMeasure,
     weight: 244,
     food: unsaltedButter
   });
-  var ingredient12 = new Ingredient({
+  const ingredient12 = new Ingredient({
     uri: '/ingredient',
     quantity: 2,
     measure: tbspMeasure,
     weight: 80,
     food: vegetableShortening
   });
-  var ingredient13 = new Ingredient({
+  const ingredient13 = new Ingredient({
     uri: '/ingredient',
     quantity: .25,
     measure: tspMeasure,
     weight: 2,
     food: salt
   });
-  var ingredient14 = new Ingredient({
+  const ingredient14 = new Ingredient({
     uri: '/ingredient',
     quantity: 2,
     measure: tbspMeasure,
@@ -291,10 +305,10 @@ var insertRecipe = function(callback) {
   });
 
   // Two-part recipe
-  var recipePart1 = new RecipePart({
+  const recipePart1 = new RecipePart({
     uri: '/recipe',
     label: 'Apple Pie',
-    images: ['https://assets.epicurious.com/photos/583f2ecab80c02a24264c1c1/master/pass/apple-pie.jpg'],
+    image: 'https://assets.epicurious.com/photos/583f2ecab80c02a24264c1c1/master/pass/apple-pie.jpg',
     source: 'Epicurious',
     url: 'https://www.epicurious.com/recipes/food/views/apple-pie-11725',
     ingredients: [ingredient1, ingredient2, ingredient3, ingredient4, ingredient5, ingredient6, ingredient7, ingredient8, ingredient9],
@@ -303,10 +317,10 @@ var insertRecipe = function(callback) {
     dietLabels: ['dessert'],
     healthLabels: ['fruit', 'vegetarian']
   });
-  var recipePart2 = new RecipePart({
+  const recipePart2 = new RecipePart({
     uri: '/recipe',
     label: 'Apple Pie',
-    images: ['https://assets.epicurious.com/photos/583f2ecab80c02a24264c1c1/master/pass/apple-pie.jpg'],
+    image: 'https://assets.epicurious.com/photos/583f2ecab80c02a24264c1c1/master/pass/apple-pie.jpg',
     source: 'Epicurious',
     url: 'https://www.epicurious.com/recipes/food/views/apple-pie-11725',
     ingredients: [ingredient10, ingredient11, ingredient12, ingredient12, ingredient13, ingredient14],
@@ -325,21 +339,21 @@ var insertRecipe = function(callback) {
     if (err) return console.error(err);
   });
 
-  var recipeIngredients = [];
+  let recipeIngredients = [];
   recipeIngredients = recipeIngredients.concat(recipePart1.ingredients);
   recipeIngredients = recipeIngredients.concat(recipePart2.ingredients);
-  var recipeTotalNutrients = [];
+  let recipeTotalNutrients = [];
   recipeTotalNutrients = recipeTotalNutrients.concat(recipePart1.totalNutrients);
   recipeTotalNutrients = recipeTotalNutrients.concat(recipePart2.totalNutrients);
-  var recipeTotalDaily = [];
+  let recipeTotalDaily = [];
   recipeTotalDaily = recipeTotalDaily.concat(recipePart1.totalDaily);
   recipeTotalDaily = recipeTotalDaily.concat(recipePart2.totalDaily);
 
   // Create recipe
-  var recipe = new Recipe({
+  const recipe = new Recipe({
     uri: '/recipe',
     label: 'Apple Pie',
-    images: ['https://assets.epicurious.com/photos/583f2ecab80c02a24264c1c1/master/pass/apple-pie.jpg'],
+    image: 'https://assets.epicurious.com/photos/583f2ecab80c02a24264c1c1/master/pass/apple-pie.jpg',
     source: 'Epicurious',
     url: 'https://www.epicurious.com/recipes/food/views/apple-pie-11725',
     yield: 8,
@@ -364,6 +378,214 @@ var insertRecipe = function(callback) {
   if(callback) callback();
 };
 
-insertRecipe(function(){
-  console.log("insertRecipe callback.");
-});
+function ensureDirectoryExistence(filePath) {
+  const dirname = path.dirname(filePath);
+  if (fs.existsSync(dirname)) {
+    return true;
+  }
+  ensureDirectoryExistence(dirname);
+  fs.mkdirSync(dirname);
+}
+
+const writeToJSONFile = function(body) {
+  // generate unique id
+  const fileId = uuidv4();
+  const resultsDir = 'apiCallResults';
+  // Create results dir if not exist
+  ensureDirectoryExistence(resultsDir);
+  // compose outfile path/name
+  const outFile = `${resultsDir}/response-${fileId}.json`;
+  // write to a new file named response${fileId}.log
+  fs.writeFile(outFile, body, (err) => {
+    // throws an error, you could also catch it here
+    if (err) throw err;
+    // success case, the file was saved
+    console.log(`response${fileId} saved!`);
+  });
+};
+
+const getQueryResults = function(){
+  const apiCallString = `https://api.edamam.com/search?q=chicken&from=11962&to=13000&params=app_id=27b0da8d&app_key=09b9d08d1f2f49cacebd82786614c2d8`;
+  let body = [];
+  let responseStr = ``;
+  https.get(apiCallString, res => {
+    res.on('error', (error) => {
+      console.log('error:', error); // Print the error if one occurred and handle it
+    });
+    res.on('response', (response) => {
+      console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+      responseStr = JSON.stringify(response);
+    });
+    res.on('data', (chunk) => {
+      body.push(chunk);
+    });
+    res.on('end', () => {
+      body = Buffer.concat(body).toString().trim();
+      // Try to parse JSON; if fail, catch error and flush data to file for later processing.
+      try {
+        const bodyJSON = JSON.parse(body);
+        insertQueryResponse(bodyJSON);
+        writeToJSONFile(body);
+      } catch(error) {
+        console.log(`Error message: ${error}\nError parsing body to JSON!\nFlushing body to file...`);
+        writeToJSONFile(body);
+      }
+    });
+  });
+};
+
+const insertQueryResponse = function(query) {
+  //let query = recipeSearchData();
+  let hits = query.hits;
+  if (hits && hits.length > 0) {
+    console.log(`# of Hits: ${hits.length}`);
+    let count = 0;
+    for (let i = 0; i < hits.length; i++) {
+      let recipe = hits[i].recipe;
+      console.log(recipe);
+      if (recipe) {
+        insertRecipe(recipe);
+        count += 1;
+      }
+    }
+    console.log(`Inserted ${count} recipes.`);
+  }
+};
+
+const insertRecipe = function(recipe, callback) {
+  recipeResult = recipe;
+  // let totalNutrients = [];
+  // let totalDaily = [];
+  // let ingredients = recipeResult.ingredients;
+  // let totalNutrientsVal = recipeResult.totalNutrients;
+  // let totalDailyVal = recipeResult.totalDaily;
+  // let digest = recipeResult.digest;
+  // if(ingredients){
+  //   console.log(ingredients.length);
+  //   for(let i = 0; i < ingredients.length; i++){
+  //     let ingredient = ingredients[i];
+  //     console.log(ingredient);
+  //     if(ingredient.measure) {
+  //       let measure = new Measure(ingredient.measure);
+  //       console.log(measure);
+  //       measure.save(function(err, result){
+  //         if (err) console.log(err);
+  //         console.log(`Measure '${result}' inserted.`);
+  //       });
+  //       ingredient.measure = measure;
+  //     } else {
+  //       console.log(`!ingredient.measure`);
+  //     }
+  //     if(ingredient.food) {
+  //       let food = new Food(ingredient.food);
+  //       food.save(function(err, result) {
+  //         if (err) console.log(err);
+  //         console.log(`Food '${result}' inserted.`);
+  //       });
+  //       ingredient.food = food;
+  //     } else {
+  //       console.log(`!ingredient.food`);
+  //     }
+  //     ingredient = new Ingredient(ingredient);
+  //     console.log(`Ingredient mongoose model:\n${ingredient}`);
+  //     ingredient.save(function(err, result){
+  //       if (err) console.log(err);
+  //       console.log(`Ingredient '${result} inserted.`);
+  //     });
+  //     ingredients[i] = ingredient;
+  //   }
+  //   console.log(`Ingredients:\n${ingredients}`);
+  // }
+  // if(totalNutrientsVal){
+  //   let keys = Object.keys(totalNutrientsVal);
+  //   console.log(keys.length);
+  //   for(let i = 0; i < keys.length; i++){
+  //     let nutrientInfo = new NutrientInfo(totalNutrientsVal[keys[i]]);
+  //     console.log(nutrientInfo);
+  //     nutrientInfo.save(function(err, result){
+  //       if (err) console.log(err);
+  //       console.log(`NutrientInfo '${result} inserted.`);
+  //     });
+  //     totalNutrients.push(nutrientInfo);
+  //   }
+  //   console.log(totalNutrients);
+  // }
+  // if(totalDailyVal){
+  //   let keys = Object.keys(totalDailyVal);
+  //   console.log(keys.length);
+  //   for(let i = 0; i < keys.length; i++){
+  //     let nutrientInfo = new NutrientInfo(totalDailyVal[keys[i]]);
+  //     console.log(nutrientInfo);
+  //     nutrientInfo.save(function(err, result){
+  //       if (err) console.log(err);
+  //       console.log(`NutrientInfo '${result} inserted.`);
+  //     });
+  //     totalDaily.push(nutrientInfo);
+  //   }
+  //   console.log(totalDaily);
+  // }
+  // if(digest) {
+  //   console.log(digest.length);
+  //   for (let i = 0; i < digest.length; i++) {
+  //     let sub = digest[i].sub;
+  //     console.log(sub);
+  //     if (sub) {
+  //       console.log("If sub");
+  //       for (let j = 0; j < sub.length; j++) {
+  //         let subD = new DigestSub(sub[j]);
+  //         subD.save(function (err, result) {
+  //           if (err) console.log(err);
+  //           console.log(`DigestSub ${result} inserted.`);
+  //         });
+  //         console.log(subD);
+  //         sub[j] = subD;
+  //       }
+  //       digest[i].sub = sub;
+  //     }
+  //     let dg = new Digest(digest[i]);
+  //     dg.save(function (err, result) {
+  //       if (err) console.log(err);
+  //       console.log(`Digest '${result} inserted.`);
+  //     });
+  //     console.log(dg);
+  //     digest[i] = dg;
+  //   }
+  //   console.log(digest);
+  // }
+  // if(ingredients.length > 0) {
+  //   console.log("If ingredients.length > 0: true");
+  //   recipeResult.ingredients = ingredients;
+  // }
+  // if(totalNutrients.length > 0){
+  //   console.log("If totalNutrients.length > 0: true");
+  //   recipeResult.totalNutrients = totalNutrients;
+  // }
+  // if(totalDaily.length > 0){
+  //   console.log("If totalDaily.length > 0: true");
+  //   recipeResult.totalDaily = totalDaily;
+  // }
+  // if(digest.length > 0){
+  //   console.log("If digest.length > 0: true");
+  //   recipeResult.digest = digest;
+  // }
+
+  recipeResult = new Recipe(recipeResult);
+
+  recipeResult.save(function (err, result) {
+    if (err) return console.error(err);
+    //console.log(`Recipe ${result.label} inserted.`);
+  });
+  if(callback) callback();
+};
+
+getQueryResults();
+
+// insertQueryResponse(function(){
+//   console.log("Insert Query Successful!");
+//   //mongoose.disconnect();
+//   //console.log('Mongoose conn disconnected.');
+// });
+
+// insertMockRecipe(function(){
+//   console.log("insertRecipe callback.");
+// });

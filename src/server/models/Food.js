@@ -1,8 +1,14 @@
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
-var FoodSchema = new mongoose.Schema({
-  uri: String,
-  label: String
+const FoodSchema = new mongoose.Schema({
+  uri: {
+    type: String,
+    required: false
+  },
+  label: {
+    type: String,
+    required: false
+  }
 });
 
 let Food = mongoose.model('Food', FoodSchema);

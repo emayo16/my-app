@@ -40,16 +40,16 @@ let response = {
 // Get users
 router.get('/users', (req, res) => {
   connection((db) => {
-      db.collection('users')
-        .find()
-        .toArray()
-        .then((users) => {
+    db.collection('users')
+      .find()
+      .toArray()
+      .then((users) => {
         response.data = users;
-      res.json(response);
-    })
-    .catch((err) => {
+        res.json(response);
+      })
+      .catch((err) => {
         sendError(err, res);
-    });
+      });
   });
 });
 
@@ -59,6 +59,10 @@ const options = {
 };
 
 restify.defaults(options);
+// Recipe Search API
+// curl "https://api.edamam.com/search?q=chicken&app_id=27b0da8d&app_key=09b9d08d1f2f49cacebd82786614c2d8&from=0&to=3&calories=gte%20591,%20lte%20722&health=alcohol-free"
+//Nutrition Analysis API
+// curl -d @food.json -H "Content-Type: application/json" "https://api.edamam.com/api/food-database/nutrients?app_id=d0bc8015&app_key=16e8c4dbcbbffc67603259f5d393a7d1"
 
 // Endpoints generated:
 

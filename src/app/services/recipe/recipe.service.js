@@ -7,9 +7,16 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
+require("rxjs/add/operator/map");
+require("rxjs/add/operator/catch");
 var RecipeService = /** @class */ (function () {
-    function RecipeService() {
+    function RecipeService(http) {
+        this.http = http;
     }
+    RecipeService.prototype.getRecipes = function () {
+        return this.http.get('/api/Recipe')
+            .map(function (res) { return res.json(); });
+    };
     RecipeService = __decorate([
         core_1.Injectable()
     ], RecipeService);

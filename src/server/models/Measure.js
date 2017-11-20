@@ -1,8 +1,14 @@
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
-var MeasureSchema = new mongoose.Schema({
-  uri: String,
-  label: String
+const MeasureSchema = new mongoose.Schema({
+  uri: {
+    type: String,
+    required: false
+  },
+  label: {
+    type: String,
+    required: false
+  }
 });
 
 let Measure = mongoose.model('Measure', MeasureSchema);
